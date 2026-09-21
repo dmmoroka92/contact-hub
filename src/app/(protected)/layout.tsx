@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { ReactNode } from "react"
 import Sidebar from "./components/sidebar"
+import TopBar from "./components/top-bar"
 
 type ProtectedLayoutProps = {
   children: ReactNode
@@ -24,11 +25,14 @@ async function ProtectedLayout({
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
 
-      <main className="min-w-0 flex-1">
-        <div className="min-h-screen px-8 py-7">
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <TopBar user={session.user} />
+
+        <main className="flex-1 px-8 py-7">
           {children}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   )
 }
