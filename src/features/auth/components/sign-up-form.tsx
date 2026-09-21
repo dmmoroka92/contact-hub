@@ -10,11 +10,16 @@ import {
   type SignUpFormData,
   signUpSchema,
 } from "../schemas/sign-up.schema";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/constants/routes";
 
 function SignUpForm() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
+    setError,
     formState: {
       errors,
       isSubmitting,
@@ -31,7 +36,22 @@ function SignUpForm() {
   });
 
   async function onSubmit(formData: SignUpFormData) {
-    console.log("submitted:", formData);
+    const { error } = await authClient.signUp.email({
+      name: `${formData.firstName} ${formData.lastName}`,
+      email: formData.email,
+      password: formData.password
+    })
+
+    if (error) {
+      setError("root", {
+        message: error.message ?? "Unable to create account"
+      })
+
+      return
+    }
+
+    router.push(ROUTES.CONTACTS)
+    router.refresh()
   }
 
   return (
@@ -39,6 +59,19 @@ function SignUpForm() {
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-5"
     >
+      {errors.root?.message && (
+        <div
+          role="alert"
+          className="
+            rounded-lg border border-red-200
+            bg-red-50 px-4 py-3
+            text-sm text-red-700
+          "
+        >
+          {errors.root.message}
+        </div>
+      )}
+
       {/* First name / Last name */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <FormField

@@ -6,12 +6,20 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { LoginFormData, loginSchema } from "../schemas/login.schema"
 
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import { ROUTES } from "@/constants/routes"
+
 function LoginForm() {
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
+    setError,
     formState: {
-      errors
+      errors,
+      isSubmitting
     }
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -21,15 +29,42 @@ function LoginForm() {
     }
   })
 
-  function onSubmit(formData: LoginFormData) {
-    console.log("submitted: ", formData)
+  async function onSubmit(formData: LoginFormData) {
+    const { error } = await authClient.signIn.email({
+      email: formData.email,
+      password: formData.password
+    })
+
+    if (error) {
+      setError("root", {
+        message: "Invalid email or password"
+      })
+
+      return
+    }
+
+    router.push(ROUTES.CONTACTS)
+    router.refresh()
   }
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-5"
-    > 
+    >
+      {errors.root?.message && (
+        <div
+          role="alert"
+          className="
+            rounded-lg border border-red-200
+            bg-red-50 px-4 py-3
+            text-sm text-red-700
+          "
+        >
+          {errors.root.message}
+        </div>
+      )}
+  
       <FormField
         id="email"
         label="Email"
@@ -43,7 +78,7 @@ function LoginForm() {
           {...register("email")}
         />
       </FormField>
-
+  
       <FormField
         id="password"
         label="Password"
@@ -57,9 +92,10 @@ function LoginForm() {
           {...register("password")}
         />
       </FormField>
-
+  
       <button
         type="submit"
+        disabled={isSubmitting}
         className="
           w-full cursor-pointer rounded-lg
           bg-slate-950 px-4 py-2.5
@@ -69,9 +105,11 @@ function LoginForm() {
           focus:outline-none
           focus:ring-2 focus:ring-slate-400
           focus:ring-offset-2
+          disabled:cursor-not-allowed
+          disabled:opacity-50
         "
       >
-        Sign in
+        {isSubmitting ? "Signing in..." : "Sign in"}
       </button>
     </form>
   )

@@ -1,10 +1,22 @@
+import { ROUTES } from "@/constants/routes";
+import { auth } from "@/lib/auth";
 import { ContactRound } from "lucide-react";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 type AuthLayoutProps = {
   children: React.ReactNode;
 };
 
-function AuthLayout({ children }: AuthLayoutProps) {
+async function AuthLayout({ children }: AuthLayoutProps) {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+
+  if (session) {
+    redirect(ROUTES.CONTACTS)
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
       <div className="w-full max-w-md">
