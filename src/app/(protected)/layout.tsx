@@ -33,6 +33,8 @@ async function ProtectedLayout({
           {children}
         </main>
       </div>
+
+      <div id="modal-root"></div>
     </div>
   )
 }

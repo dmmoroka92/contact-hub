@@ -8,7 +8,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default defineConfig({
-  schema: "./src/db/db.schema.ts",
+  schema: "./src/db/*.schema.ts",
   out: "./drizzle",
   dialect: "mysql",
 

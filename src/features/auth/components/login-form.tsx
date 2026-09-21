@@ -1,7 +1,7 @@
 "use client"
 
 import FormField from "@/app/components/ui/forms/form-field/form-field"
-import Input from "@/app/components/ui/forms/input/input"
+import Input from "@/app/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { LoginFormData, loginSchema } from "../schemas/login.schema"

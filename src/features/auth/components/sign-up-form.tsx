@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import FormField from "@/app/components/ui/forms/form-field/form-field";
-import Input from "@/app/components/ui/forms/input/input";
+import Input from "@/app/components/ui/input";
 import {
   type SignUpFormData,
   signUpSchema,
