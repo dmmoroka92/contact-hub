@@ -1,48 +1,43 @@
 "use client";
 
+import { useState } from "react";
+import { Plus } from "lucide-react";
+
 import Modal from "@/app/components/ui/modal/modal";
 import { cn } from "@/lib/utils";
-import { Company } from "@/types/companies";
-import { Plus } from "lucide-react";
-import { useState } from "react";
-import ContactForm from "./contact-form";
+import CompanyForm from "./company-form";
 
-type ContactsHeaderProps = {
-  companies: Company[]
-}
-
-export default function ContactsHeader({
-  companies
-}: ContactsHeaderProps) {
-  const [isAddContactOpen, setIsAddContactOpen] = useState<boolean>(false)
-  const [isCreatingContact, setIsCreatingContact] = useState<boolean>(false);
+export default function CompaniesHeader() {
+  const [isAddCompanyOpen, setIsAddCompanyOpen] =
+    useState<boolean>(false);
+  const [isAddingCompany, setIsAddingCompany] = useState<boolean>(false)  
 
   function closeModal() {
-    setIsAddContactOpen(false)
+    setIsAddCompanyOpen(false);
   }
 
   return (
     <div className="flex items-start justify-between gap-6">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
-          Contacts
+          Companies
         </h1>
 
         <p className="mt-1 text-sm text-slate-500">
-          Manage your contacts and keep your network organized.
+          Manage companies and organize your professional network.
         </p>
       </div>
 
       <button
         type="button"
-        onClick={() => setIsAddContactOpen(true)}
+        onClick={() => setIsAddCompanyOpen(true)}
+        disabled={isAddingCompany}
         className={cn(
           "inline-flex cursor-pointer items-center justify-center gap-2",
           "rounded-lg bg-blue-600",
           "px-4 py-2.5",
           "text-sm font-medium text-white",
-          "shadow-sm",
-          "transition",
+          "shadow-sm transition",
           "hover:bg-blue-700",
           "focus:outline-none",
           "focus:ring-2 focus:ring-blue-500",
@@ -50,18 +45,18 @@ export default function ContactsHeader({
         )}
       >
         <Plus className="size-5" />
-        Add Contact
+        Add Company
       </button>
 
       <Modal
-        open={isAddContactOpen}
-        title="New contact"
+        open={isAddCompanyOpen}
+        title="New company"
+        onClose={closeModal}
         footer={
           <>
             <button
               type="button"
               onClick={closeModal}
-              disabled={isCreatingContact}
               className={cn(
                 "cursor-pointer rounded-lg",
                 "border border-slate-300",
@@ -71,7 +66,7 @@ export default function ContactsHeader({
                 "hover:bg-slate-50",
                 "focus:outline-none",
                 "focus:ring-2 focus:ring-slate-300",
-                "focus:ring-offset-2"
+                "focus:ring-offset-2",
               )}
             >
               Cancel
@@ -79,7 +74,7 @@ export default function ContactsHeader({
 
             <button
               type="submit"
-              form="contact-form"
+              form="company-form"
               className={cn(
                 "cursor-pointer rounded-lg",
                 "bg-blue-600 px-4 py-2",
@@ -88,19 +83,17 @@ export default function ContactsHeader({
                 "hover:bg-blue-700",
                 "focus:outline-none",
                 "focus:ring-2 focus:ring-blue-500",
-                "focus:ring-offset-2"
+                "focus:ring-offset-2",
               )}
             >
-              { isCreatingContact ? "Creating..." : "Add contact" }
+              {isAddingCompany ? "Creating..." : "Add company"}
             </button>
           </>
         }
-        onClose={closeModal}
       >
-        <ContactForm
-          companies={companies}
+        <CompanyForm
           onSuccess={closeModal}
-          onSubmittingChange={setIsCreatingContact}
+          onSubmittingChange={setIsAddingCompany}  
         />
       </Modal>
     </div>

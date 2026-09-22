@@ -12,13 +12,13 @@ import Select from "@/app/components/ui/select";
 import { Company } from "@/types/companies";
 
 import { toast } from "sonner";
-import { createContact } from "../actions/create-contact";
 
+import { useEffect } from "react";
 import {
   ContactFormData,
-  contactSchema,
-} from "../schemas/contacts.schema";
-import { useEffect } from "react";
+  contactSchema
+} from "@/features/contacts/schemas/contacts.schema";
+import { createContact } from "@/features/contacts/actions/create-contact";
 
 type ContactFormProps = {
   companies: Company[]
