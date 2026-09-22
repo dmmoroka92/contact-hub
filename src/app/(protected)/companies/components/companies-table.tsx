@@ -31,8 +31,8 @@ import { deleteCompanies } from "@/features/companies/actions/delete-companies";
 
 import { cn, formatDate } from "@/lib/utils";
 
-import type { CompanyWithContacts } from "@/types/companies";
 import Modal from "@/app/components/ui/modal/modal";
+import type { CompanyWithContacts } from "@/types/companies";
 import CompanyForm from "./company-form";
 
 type CompaniesTableProps = {

@@ -1,0 +1,1 @@
+export const ITEMS_PER_PAGE = [1,5, 10, 25, 50]

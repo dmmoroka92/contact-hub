@@ -2,6 +2,7 @@ import { getCompanies } from "@/features/companies/queries/get-companies.query";
 
 import CompaniesHeader from "./components/companies-header";
 import CompaniesTable from "./components/companies-table";
+import { ITEMS_PER_PAGE } from "@/constants/pagination";
 
 type CompaniesPageProps = {
   searchParams: Promise<{
@@ -22,9 +23,9 @@ async function CompaniesPage({
 
   const requestedPerPage = Number(params.perPage);
 
-  const perPage = [10, 25, 50].includes(requestedPerPage)
+  const perPage = ITEMS_PER_PAGE.includes(requestedPerPage)
     ? requestedPerPage
-    : 10;
+    : 1;
 
   const {
     data: companies,

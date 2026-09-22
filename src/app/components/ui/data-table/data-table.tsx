@@ -200,13 +200,11 @@ function DataTable<T extends { id: number }>({
         </div>
       </div>
 
-      {pagination.totalPages > 1 && (
-        <TablePagination
-          pagination={pagination}
-          onPageChange={onPageChange}
-          onPerPageChange={onPerPageChange}
-        />
-      )}
+      <TablePagination
+        pagination={pagination}
+        onPageChange={onPageChange}
+        onPerPageChange={onPerPageChange}
+      />
     </div>
   );
 }

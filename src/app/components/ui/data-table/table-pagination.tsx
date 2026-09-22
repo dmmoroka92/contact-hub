@@ -2,6 +2,7 @@
 import { cn } from "@/lib/utils";
 import { getVisiblePages } from "./pagination.utils";
 import PaginationButton from "./pagination-button";
+import { ITEMS_PER_PAGE } from "@/constants/pagination";
 
 export type Pagination = {
   currentPage: number;
@@ -76,9 +77,15 @@ function TablePagination({
               "focus:ring-2 focus:ring-blue-100",
             )}
           >
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
+            {ITEMS_PER_PAGE.map(perPage => {
+              return  (
+                <option
+                  key={`perPage-${perPage}`}
+                  value={perPage}>
+                    {perPage}
+                </option>
+              )
+            })}
           </select>
 
           <span className="text-sm text-slate-500">
@@ -86,7 +93,7 @@ function TablePagination({
           </span>
         </div>
 
-        {totalPages > 0 && (
+        {totalPages > 1 && (
           <div className="flex items-center gap-1">
             <PaginationButton
               disabled={!hasPreviousPage}
