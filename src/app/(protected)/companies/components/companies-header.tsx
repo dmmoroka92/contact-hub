@@ -10,8 +10,6 @@ import CompanyForm from "./company-form";
 export default function CompaniesHeader() {
   const [isAddCompanyOpen, setIsAddCompanyOpen] =
     useState<boolean>(false);
-  const [isAddingCompany, setIsAddingCompany] = useState<boolean>(false)  
-
   function closeModal() {
     setIsAddCompanyOpen(false);
   }
@@ -31,7 +29,6 @@ export default function CompaniesHeader() {
       <button
         type="button"
         onClick={() => setIsAddCompanyOpen(true)}
-        disabled={isAddingCompany}
         className={cn(
           "inline-flex cursor-pointer items-center justify-center gap-2",
           "rounded-lg bg-blue-600",
@@ -86,14 +83,13 @@ export default function CompaniesHeader() {
                 "focus:ring-offset-2",
               )}
             >
-              {isAddingCompany ? "Creating..." : "Add company"}
+              Add company
             </button>
           </>
         }
       >
         <CompanyForm
           onSuccess={closeModal}
-          onSubmittingChange={setIsAddingCompany}  
         />
       </Modal>
     </div>

@@ -32,6 +32,8 @@ import { deleteCompanies } from "@/features/companies/actions/delete-companies";
 import { cn, formatDate } from "@/lib/utils";
 
 import type { CompanyWithContacts } from "@/types/companies";
+import Modal from "@/app/components/ui/modal/modal";
+import CompanyForm from "./company-form";
 
 type CompaniesTableProps = {
   companies: CompanyWithContacts[];
@@ -56,6 +58,8 @@ function CompaniesTable({
 
   const [confirmationAction, setConfirmationAction] =
     useState<ConfirmationAction | null>(null);
+  const [companyToEdit, setCompanyToEdit] =
+    useState<CompanyWithContacts | null>(null);  
 
   const [isProcessing, setIsProcessing] =
     useState(false);
@@ -208,9 +212,13 @@ function CompaniesTable({
       handler: (companyIds) => {
         const [companyId] = companyIds;
 
-        router.push(
-          `/companies/${companyId}/edit`,
+        const company = companies.find(
+          (company) => company.id === companyId,
         );
+
+        if (!company) return;
+
+        setCompanyToEdit(company);
       },
     },
     {
@@ -290,6 +298,52 @@ function CompaniesTable({
         }
         onConfirm={handleConfirmAction}
       />
+
+    {companyToEdit && (
+      <Modal
+        open={companyToEdit !== null}
+        title="Edit company"
+        onClose={() => setCompanyToEdit(null)}
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => setCompanyToEdit(null)}
+              className={cn(
+                "cursor-pointer rounded-lg",
+                "border border-slate-300",
+                "bg-white px-4 py-2",
+                "text-sm font-medium text-slate-700",
+                "hover:bg-slate-50",
+              )}
+            >
+              Cancel
+            </button>
+  
+            <button
+              type="submit"
+              form="company-form"
+              className={cn(
+                "cursor-pointer rounded-lg",
+                "bg-blue-600 px-4 py-2",
+                "text-sm font-medium text-white",
+                "hover:bg-blue-700",
+              )}
+            >
+              Save changes
+            </button>
+          </>
+        }
+      >
+        <CompanyForm
+          company={companyToEdit}
+          onSuccess={() => {
+            setCompanyToEdit(null);
+            router.refresh();
+          }}
+        />
+      </Modal>
+    )}
     </>
   );
 }

@@ -10,58 +10,69 @@ import {
   CompanyFormData,
   companySchema,
 } from "@/features/companies/queries/schemas/companies.schema";
-import { useEffect } from "react";
 import { createCompany } from "@/features/companies/actions/create-company";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { CompanyWithContacts } from "@/types/companies";
+import { updateCompany } from "@/features/companies/actions/update-company";
 
 type CompanyFormProps = {
+  company?: CompanyWithContacts,
   onSuccess?: () => void
-  onSubmittingChange?: (isSubmitting: boolean) => void;
 };
 
 function CompanyForm({
   onSuccess,
-  onSubmittingChange
+  company
 }: CompanyFormProps) {
   const router = useRouter();
+
+  const isEditing = !!company
 
   const {
     register,
     handleSubmit,
     formState: {
-      errors,
-      isSubmitting
+      errors
     },
   } = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
     defaultValues: {
-      name: "",
-      website: "",
-      industry: "",
+      name: company?.name ?? "",
+      website: company?.website ?? "",
+      industry: company?.industry ?? "",
     },
   });
 
-  useEffect(() => {
-    onSubmittingChange?.(isSubmitting);
-  }, [isSubmitting, onSubmittingChange]);
-
-  async function onSubmit(formData: CompanyFormData) {
+  async function onSubmit(
+    formData: CompanyFormData,
+  ) {
     try {
-      await createCompany(formData)
+      if (company) {
+        await updateCompany(
+          company.id,
+          formData,
+        );
 
-      toast.success("Company was created")
+        toast.success(
+          "Company updated successfully.",
+        );
+      } else {
+        await createCompany(formData);
 
-      router.refresh()
+        toast.success(
+          "Company created successfully.",
+        );
+      }
 
-      onSuccess?.()
-    } catch(error: unknown) {
-      console.error("Company creation failed:", error);
-
+      onSuccess?.();
+    } catch (error: unknown) {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Failed to create company"
+          : isEditing
+            ? "Failed to update company"
+            : "Failed to create company",
       );
     }
   }
@@ -114,4 +125,4 @@ function CompanyForm({
   );
 }
 
-export default CompanyForm;
+export default CompanyForm
