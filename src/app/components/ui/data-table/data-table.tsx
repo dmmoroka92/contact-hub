@@ -42,7 +42,8 @@ function DataTable<T extends { id: number }>({
   onPageChange,
   onPerPageChange,
 }: DataTableProps<T>) {
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] =
+    useState<number[]>([]);
 
   const hasBulkActions = bulkActions.length > 0;
   const hasRowActions = rowActions.length > 0;
@@ -74,13 +75,17 @@ function DataTable<T extends { id: number }>({
     );
   }
 
+  function clearSelection() {
+    setSelectedIds([]);
+  }
+
   return (
     <div className="space-y-3">
       {hasBulkActions && selectedIds.length > 0 && (
         <BulkActions
           itemIds={selectedIds}
           actions={bulkActions}
-          onClear={() => setSelectedIds([])}
+          onClear={clearSelection}
         />
       )}
 

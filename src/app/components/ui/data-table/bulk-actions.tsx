@@ -21,6 +21,14 @@ function BulkActions({
   actions,
   onClear,
 }: BulkActionsProps) {
+  function handleAction(action: BulkAction) {
+    action.handler(itemIds);
+
+    // Automatically clear selection after
+    // any bulk action is triggered.
+    onClear();
+  }
+
   return (
     <div
       className={cn(
@@ -43,7 +51,7 @@ function BulkActions({
             icon={action.icon}
             label={action.label}
             destructive={action.isDestructive}
-            onClick={() => action.handler(itemIds)}
+            onClick={() => handleAction(action)}
           />
         ))}
       </div>
@@ -51,7 +59,10 @@ function BulkActions({
       <button
         type="button"
         onClick={onClear}
-        className="cursor-pointer text-sm font-medium text-blue-600 hover:text-blue-700"
+        className={cn(
+          "cursor-pointer text-sm font-medium",
+          "text-blue-600 hover:text-blue-700",
+        )}
       >
         Clear selection
       </button>

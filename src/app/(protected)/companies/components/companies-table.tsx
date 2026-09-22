@@ -15,6 +15,8 @@ import {
   useSearchParams,
 } from "next/navigation";
 
+import { toast } from "sonner";
+
 import DataTable, {
   type DataTableColumn,
 } from "@/app/components/ui/data-table/data-table";
@@ -26,9 +28,10 @@ import type { Pagination } from "@/app/components/ui/data-table/table-pagination
 import ConfirmationModal from "@/app/components/ui/modal/confirmation-modal";
 
 import { deleteCompanies } from "@/features/companies/actions/delete-companies";
+
 import { cn, formatDate } from "@/lib/utils";
+
 import type { CompanyWithContacts } from "@/types/companies";
-import { toast } from "sonner";
 
 type CompaniesTableProps = {
   companies: CompanyWithContacts[];
@@ -78,10 +81,11 @@ function CompaniesTable({
             rel="noopener noreferrer"
             className={cn(
               "inline-flex items-center gap-1.5",
-              "text-blue-600 hover:text-blue-700"
+              "text-blue-600 hover:text-blue-700",
             )}
           >
             {company.website}
+
             <ExternalLink className="size-3.5" />
           </a>
         ) : (
@@ -93,7 +97,8 @@ function CompaniesTable({
     {
       key: "contacts",
       header: "Contacts",
-      render: (company) => company.contactsCount,
+      render: (company) =>
+        company.contactsCount,
     },
     {
       key: "industry",
@@ -120,24 +125,20 @@ function CompaniesTable({
   async function handleDeleteCompanies(
     companyIds: number[],
   ) {
-    try {
-      await deleteCompanies(companyIds)
+    await deleteCompanies(companyIds);
 
-      router.refresh()
+    router.refresh();
 
-      toast.success("Companies deleted successfully.")
-    } catch(error: unknown) {
-      console.error("Companies deletion failed:", error);
-
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Failed to delete companies"
-      );
-    }
+    toast.success(
+      companyIds.length === 1
+        ? "Company deleted successfully."
+        : "Companies deleted successfully.",
+    );
   }
 
-  function requestDelete(companyIds: number[]) {
+  function requestDelete(
+    companyIds: number[],
+  ) {
     const count = companyIds.length;
 
     setConfirmationAction({
@@ -173,12 +174,16 @@ function CompaniesTable({
       );
 
       setConfirmationAction(null);
-
-      router.refresh();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(
         "Company action failed:",
         error,
+      );
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Company action failed",
       );
     } finally {
       setIsProcessing(false);
@@ -269,7 +274,9 @@ function CompaniesTable({
 
       <ConfirmationModal
         open={confirmationAction !== null}
-        title={confirmationAction?.title ?? ""}
+        title={
+          confirmationAction?.title ?? ""
+        }
         description={
           confirmationAction?.description ?? ""
         }
